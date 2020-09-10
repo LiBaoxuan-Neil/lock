@@ -5,12 +5,12 @@
     <parent>
         <artifactId>lock</artifactId>
         <groupId>com.github.houbb</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lock-redis</artifactId>
-    <description>The lock depends on redis.</description>
+    <artifactId>lock-core</artifactId>
+    <description>The core lock implements.</description>
 
     <dependencies>
         <!--============================== SELF ==============================-->

@@ -31,7 +31,46 @@ maven 3.x+
 ```xml
 <dependency>
     <groupId>com.github.houbb</groupId>
-    <artifactId>lock</artifactId>
+    <artifactId>lock-core</artifactId>
     <version>${最新版本}</version>
 </dependency>
 ```
+
+## 入门例子
+
+基于本地 redis 的测试案例。
+
+```java
+Jedis jedis = new Jedis("127.0.0.1", 6379);
+IOperator operator = new JedisOperator(jedis);
+
+// 获取锁
+ILock lock = LockRedisBs.newInstance().operator(operator).lock();
+
+try {
+    boolean lockResult = lock.tryLock();
+    System.out.println(lockResult);
+    // 业务处理
+} catch (Exception e) {
+    e.printStackTrace();
+} finally {
+    lock.unlock();
+}
+```
+
+# 后期 Road-MAP
+
+- [ ] 支持锁的可重入
+
+持有锁的线程可以多次获取锁
+
+- [ ] redis 实现的支持
+
+cluster 支持
+
+redis 支持
+
+aliyun-redis 支持
+
+各种各样的声明方式的默认支持
+
