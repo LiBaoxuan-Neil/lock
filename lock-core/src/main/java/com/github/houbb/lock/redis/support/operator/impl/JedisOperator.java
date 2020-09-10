@@ -1,7 +1,7 @@
-package com.github.houbb.lock.redis.support.redis.impl;
+package com.github.houbb.lock.redis.support.operator.impl;
 
 import com.github.houbb.lock.redis.constant.LockRedisConst;
-import com.github.houbb.lock.redis.support.redis.IRedisOperator;
+import com.github.houbb.lock.redis.support.operator.IOperator;
 import redis.clients.jedis.Jedis;
 
 import java.util.Collections;
@@ -11,7 +11,7 @@ import java.util.Collections;
  * @author binbin.hou
  * @since 0.0.1
  */
-public class JedisOperator implements IRedisOperator {
+public class JedisOperator implements IOperator {
 
     /**
      * jedis 客户端
@@ -37,7 +37,7 @@ public class JedisOperator implements IRedisOperator {
      * @since 0.0.1
      */
     @Override
-    public boolean tryLock(String lockKey, String requestId, int expireTimeMills) {
+    public boolean lock(String lockKey, String requestId, int expireTimeMills) {
         String result = jedis.set(lockKey, requestId, LockRedisConst.SET_IF_NOT_EXIST, LockRedisConst.SET_WITH_EXPIRE_TIME, expireTimeMills);
         return LockRedisConst.LOCK_SUCCESS.equals(result);
     }

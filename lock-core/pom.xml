@@ -19,6 +19,20 @@
             <artifactId>lock-api</artifactId>
         </dependency>
 
+        <!--============================== INTER ==============================-->
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>id-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>wait</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>heaven</artifactId>
+        </dependency>
+
         <!--============================== OTHER ==============================-->
         <dependency>
             <groupId>redis.clients</groupId>

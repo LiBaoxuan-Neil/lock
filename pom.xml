@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>lock-api</module>
-        <module>lock-redis</module>
+        <module>lock-core</module>
     </modules>
 
     <properties>
@@ -32,7 +32,9 @@
 
         <!--============================== INTER ==============================-->
         <plugin.gen.version>1.0.6</plugin.gen.version>
-        <heaven.version>0.1.113</heaven.version>
+        <heaven.version>0.1.114</heaven.version>
+        <id.version>0.0.6</id.version>
+        <wait.version>0.0.1</wait.version>
 
         <!--============================== OTHER ==============================-->
         <junit.version>4.12</junit.version>
@@ -58,6 +60,16 @@
                 <groupId>com.github.houbb</groupId>
                 <artifactId>heaven</artifactId>
                 <version>${heaven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>id-core</artifactId>
+                <version>${id.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>wait</artifactId>
+                <version>${wait.version}</version>
             </dependency>
 
             <!--============================== OTHER ==============================-->

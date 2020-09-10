@@ -1,11 +1,11 @@
-package com.github.houbb.lock.redis.support.redis;
+package com.github.houbb.lock.redis.support.operator;
 
 /**
  * Redis 客户端
  * @author binbin.hou
- * @since 1.0.0
+ * @since 0.0.1
  */
-public interface IRedisOperator {
+public interface IOperator {
 
     /**
      * 尝试获取分布式锁
@@ -14,8 +14,9 @@ public interface IRedisOperator {
      * @param requestId  请求标识
      * @param expireTimeMills 超期时间
      * @return 是否获取成功
+     * @since 0.0.1
      */
-    boolean tryLock(String lockKey, String requestId, int expireTimeMills);
+    boolean lock(String lockKey, String requestId, int expireTimeMills);
 
     /**
      * 解锁

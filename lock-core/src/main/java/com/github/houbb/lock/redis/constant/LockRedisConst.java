@@ -45,6 +45,12 @@ public final class LockRedisConst {
      * 暂时定为 30min
      * @since 0.0.1
      */
-    public static final long DEFAULT_EXPIRE_MILLS = 1000 * 60 * 30L;
+    public static final int DEFAULT_EXPIRE_MILLS = 1000 * 60 * 30;
+
+    /**
+     * 默认锁为全局锁
+     * @since 0.0.1
+     */
+    public static final String DEFAULT_KEY = "GLOBAL";
 
 }
