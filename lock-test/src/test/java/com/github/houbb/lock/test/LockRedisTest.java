@@ -11,7 +11,7 @@ import redis.clients.jedis.Jedis;
  * @author binbin.hou
  * @since 0.0.1
  */
-public class RedisLockTest {
+public class LockRedisTest {
 
     @Test
     public void helloTest() {

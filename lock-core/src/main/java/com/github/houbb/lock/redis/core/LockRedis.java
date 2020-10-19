@@ -16,7 +16,7 @@ import com.github.houbb.wait.api.IWait;
  * @author binbin.hou
  * @since 0.0.1
  */
-public class LockRedis extends AbstractLockRedis {
+public class LockRedis extends AbstractLock {
 
     /**
      * redis 操作实现

@@ -3,6 +3,7 @@ package com.github.houbb.lock.redis.core;
 import com.github.houbb.lock.api.core.ILock;
 import com.github.houbb.lock.redis.constant.LockRedisConst;
 import com.github.houbb.wait.api.IWait;
+import com.github.houbb.wait.core.Waits;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -12,7 +13,7 @@ import java.util.concurrent.locks.Condition;
  * @author binbin.hou
  * @since 0.0.1
  */
-public abstract class AbstractLockRedis implements ILock {
+public abstract class AbstractLock implements ILock {
 
     /**
      * 锁等待
@@ -20,7 +21,11 @@ public abstract class AbstractLockRedis implements ILock {
      */
     private final IWait wait;
 
-    protected AbstractLockRedis(IWait wait) {
+    public AbstractLock() {
+        this.wait = Waits.threadSleep();
+    }
+
+    protected AbstractLock(IWait wait) {
         this.wait = wait;
     }
 
@@ -68,8 +73,8 @@ public abstract class AbstractLockRedis implements ILock {
                 return true;
             }
 
-            // 等待 10ms
-            wait.wait(TimeUnit.MILLISECONDS, 10);
+            // 等待 1ms
+            wait.wait(TimeUnit.MILLISECONDS, 1);
         }
         return false;
     }
