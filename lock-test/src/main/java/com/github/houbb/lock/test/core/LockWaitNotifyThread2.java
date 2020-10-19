@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit;
  * @author binbin.hou
  * @since 1.0.0
  */
-public class LockWaitNotifyThread implements Runnable {
+public class LockWaitNotifyThread2 implements Runnable {
 
-    private static final Log log = LogFactory.getLog(LockWaitNotifyThread.class);
+    private static final Log log = LogFactory.getLog(LockWaitNotifyThread2.class);
 
     private final ILock lock = new LockWaitNotify();
 
@@ -23,14 +23,20 @@ public class LockWaitNotifyThread implements Runnable {
         log.debug("first lock");
 
         lock.lock();
+
+        log.debug("second lock");
+        lock.lock();
         log.info("执行业务逻辑。");
         DateUtil.sleep(TimeUnit.SECONDS, 5);
+        log.debug("second unlock");
+        lock.unlock();
+
         lock.unlock();
         log.debug("first unlock");
     }
 
     public static void main(String[] args) {
-        final Runnable runnable = new LockWaitNotifyThread();
+        final Runnable runnable = new LockWaitNotifyThread2();
         new Thread(runnable).start();
         new Thread(runnable).start();
         new Thread(runnable).start();

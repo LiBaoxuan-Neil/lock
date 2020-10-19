@@ -36,6 +36,7 @@
         <heaven.version>0.1.114</heaven.version>
         <id.version>0.0.6</id.version>
         <wait.version>0.0.1</wait.version>
+        <log-integration.version>1.1.8</log-integration.version>
 
         <!--============================== OTHER ==============================-->
         <junit.version>4.12</junit.version>
@@ -71,6 +72,11 @@
                 <groupId>com.github.houbb</groupId>
                 <artifactId>wait</artifactId>
                 <version>${wait.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>log-integration</artifactId>
+                <version>${log-integration.version}</version>
             </dependency>
 
             <!--============================== OTHER ==============================-->
