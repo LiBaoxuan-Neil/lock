@@ -1,5 +1,6 @@
 package com.github.houbb.lock.redis.core;
 
+import com.github.houbb.lock.api.core.IReadWriteLock;
 import com.github.houbb.log.integration.core.Log;
 import com.github.houbb.log.integration.core.LogFactory;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author binbin.hou
  * @since 0.0.2
  */
-public class LockReadWriteOwner {
+public class LockReadWriteOwner implements IReadWriteLock {
 
     private static final Log log = LogFactory.getLog(LockReadWriteOwner.class);
 
@@ -42,11 +43,16 @@ public class LockReadWriteOwner {
      *
      * @since 0.0.2
      */
-    public synchronized void lockRead() throws InterruptedException {
-        // 写锁存在,需要wait
-        while (!tryLockRead()) {
-            log.debug("获取读锁失败，进入等待状态。");
-            wait();
+    @Override
+    public synchronized void lockRead() {
+        try {
+            // 写锁存在,需要wait
+            while (!tryLockRead()) {
+                log.debug("获取读锁失败，进入等待状态。");
+                wait();
+            }
+        } catch (InterruptedException e) {
+            Thread.interrupted();
         }
     }
 
@@ -75,6 +81,7 @@ public class LockReadWriteOwner {
      *
      * @since 0.0.2
      */
+    @Override
     public synchronized void unlockRead() {
         Thread currentThread = Thread.currentThread();
         Integer readCount = readCountMap.get(currentThread);
@@ -83,6 +90,7 @@ public class LockReadWriteOwner {
             throw new RuntimeException("当前线程未持有任何读锁，释放锁失败！");
         } else {
             log.debug("释放读锁，唤醒所有等待线程。");
+            readCountMap.remove(currentThread);
             notifyAll();
         }
     }
@@ -92,14 +100,19 @@ public class LockReadWriteOwner {
      *
      * @since 0.0.2
      */
-    public synchronized void lockWrite() throws InterruptedException {
-        // 写锁存在,需要wait
-        while (!tryLockWrite()) {
-            wait();
-        }
+    @Override
+    public synchronized void lockWrite() {
+        try {
+            // 写锁存在,需要wait
+            while (!tryLockWrite()) {
+                wait();
+            }
 
-        // 此时已经不存在获取写锁的线程了,因此占坑,防止写锁饥饿
-        writeCount++;
+            // 此时已经不存在获取写锁的线程了,因此占坑,防止写锁饥饿
+            writeCount++;
+        } catch (InterruptedException e) {
+            Thread.interrupted();
+        }
     }
 
     /**
@@ -131,6 +144,7 @@ public class LockReadWriteOwner {
      *
      * @since 0.0.2
      */
+    @Override
     public synchronized void unlockWrite() {
         boolean toNullResult = writeOwner.compareAndSet(Thread.currentThread(), null);
 
