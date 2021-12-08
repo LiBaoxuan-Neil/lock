@@ -1,6 +1,7 @@
-package com.github.houbb.lock.test;
+package com.github.houbb.lock.test.redis;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
@@ -8,6 +9,7 @@ import redis.clients.jedis.Jedis;
  * @author binbin.hou
  * @since 0.0.1
  */
+@Ignore
 public class JedisTest {
 
     @Test

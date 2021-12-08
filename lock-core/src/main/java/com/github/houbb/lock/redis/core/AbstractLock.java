@@ -1,7 +1,7 @@
 package com.github.houbb.lock.redis.core;
 
 import com.github.houbb.lock.api.core.ILock;
-import com.github.houbb.lock.redis.constant.LockRedisConst;
+import com.github.houbb.lock.redis.constant.LockConst;
 import com.github.houbb.wait.api.IWait;
 import com.github.houbb.wait.core.Waits;
 
@@ -41,12 +41,12 @@ public abstract class AbstractLock implements ILock {
 
     @Override
     public boolean tryLock() {
-        return tryLock(LockRedisConst.DEFAULT_KEY);
+        return tryLock(LockConst.DEFAULT_KEY);
     }
 
     @Override
     public void unlock() {
-        unlock(LockRedisConst.DEFAULT_KEY);
+        unlock(LockConst.DEFAULT_KEY);
     }
 
     @Override
@@ -81,7 +81,7 @@ public abstract class AbstractLock implements ILock {
 
     @Override
     public synchronized boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        return tryLock(time, unit, LockRedisConst.DEFAULT_KEY);
+        return tryLock(time, unit, LockConst.DEFAULT_KEY);
     }
 
     @Override

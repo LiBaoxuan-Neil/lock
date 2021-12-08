@@ -1,7 +1,7 @@
-package com.github.houbb.lock.redis.support.operator.impl;
+package com.github.houbb.lock.redis.support.operator;
 
+import com.github.houbb.lock.api.support.IOperator;
 import com.github.houbb.lock.redis.constant.LockRedisConst;
-import com.github.houbb.lock.redis.support.operator.IOperator;
 import redis.clients.jedis.Jedis;
 
 import java.util.Collections;

@@ -9,21 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lock-test</artifactId>
+    <artifactId>lock-redis</artifactId>
 
     <dependencies>
+        <!--============================== SELF ==============================-->
         <dependency>
             <groupId>com.github.houbb</groupId>
             <artifactId>lock-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>lock-redis</artifactId>
-        </dependency>
 
+        <!--============================== OTHER ==============================-->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
         </dependency>
     </dependencies>
 

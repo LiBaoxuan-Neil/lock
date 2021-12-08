@@ -1,9 +1,10 @@
-package com.github.houbb.lock.test;
+package com.github.houbb.lock.test.redis;
 
 import com.github.houbb.lock.api.core.ILock;
+import com.github.houbb.lock.api.support.IOperator;
 import com.github.houbb.lock.redis.bs.LockRedisBs;
-import com.github.houbb.lock.redis.support.operator.IOperator;
-import com.github.houbb.lock.redis.support.operator.impl.JedisOperator;
+import com.github.houbb.lock.redis.support.operator.JedisOperator;
+import org.junit.Ignore;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
@@ -11,6 +12,7 @@ import redis.clients.jedis.Jedis;
  * @author binbin.hou
  * @since 0.0.1
  */
+@Ignore
 public class LockRedisTest {
 
     @Test

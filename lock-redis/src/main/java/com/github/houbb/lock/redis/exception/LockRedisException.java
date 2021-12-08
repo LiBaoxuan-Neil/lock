@@ -2,9 +2,9 @@ package com.github.houbb.lock.redis.exception;
 
 /**
  * @author binbin.hou
- * @since 0.0.1
+ * @since 0.0.3
  */
-public class LockRedisException extends RuntimeException {
+public class LockRedisException extends LockRuntimeException {
 
     public LockRedisException() {
     }

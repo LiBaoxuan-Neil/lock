@@ -36,7 +36,7 @@ public class LockReadWriteRe implements IReadWriteLock {
     /**
      * 写次数统计
      */
-    private int writeCount = 0;
+    private volatile int writeCount = 0;
 
     /**
      * 获取读锁,读锁在写锁不存在的时候才能获取
@@ -60,7 +60,7 @@ public class LockReadWriteRe implements IReadWriteLock {
      * 尝试获取读锁
      *
      * 读锁之间是不互斥的，这里后续需要优化。
-     * 
+     *
      * @return 是否成功
      * @since 0.0.2
      */

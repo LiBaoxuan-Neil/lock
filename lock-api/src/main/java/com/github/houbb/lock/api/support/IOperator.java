@@ -1,9 +1,12 @@
-package com.github.houbb.lock.redis.support.operator;
+package com.github.houbb.lock.api.support;
 
 /**
- * Redis 客户端
+ * 操作接口定义
+ *
+ * ps: 可以基于集中式数据库做操作
+ *
  * @author binbin.hou
- * @since 0.0.1
+ * @since 0.0.3
  */
 public interface IOperator {
 
@@ -14,7 +17,7 @@ public interface IOperator {
      * @param requestId  请求标识
      * @param expireTimeMills 超期时间
      * @return 是否获取成功
-     * @since 0.0.1
+     * @since 0.0.3
      */
     boolean lock(String lockKey, String requestId, int expireTimeMills);
 
@@ -23,7 +26,7 @@ public interface IOperator {
      * @param lockKey 锁 key
      * @param requestId 请求标识
      * @return 结果
-     * @since 0.0.1
+     * @since 0.0.3
      */
     boolean unlock(String lockKey, String requestId);
 

@@ -17,12 +17,12 @@ public class LockReadWrite implements IReadWriteLock {
     /**
      * 读次数统计
      */
-    private int readCount = 0;
+    private volatile int readCount = 0;
 
     /**
      * 写次数统计
      */
-    private int writeCount = 0;
+    private volatile int writeCount = 0;
 
     /**
      * 获取读锁,读锁在写锁不存在的时候才能获取

@@ -3,8 +3,8 @@ package com.github.houbb.lock.redis.bs;
 import com.github.houbb.id.api.Id;
 import com.github.houbb.id.core.core.Ids;
 import com.github.houbb.lock.api.core.ILock;
-import com.github.houbb.lock.redis.core.LockRedis;
-import com.github.houbb.lock.redis.support.operator.IOperator;
+import com.github.houbb.lock.api.support.IOperator;
+import com.github.houbb.lock.redis.lock.LockRedis;
 import com.github.houbb.wait.api.IWait;
 import com.github.houbb.wait.core.Waits;
 
@@ -24,7 +24,7 @@ public final class LockRedisBs {
     private IWait wait = Waits.threadSleep();
 
     /**
-     * 等待实现
+     * ID 实现
      * @since 0.0.1
      */
     private Id id = Ids.uuid32();

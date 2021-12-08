@@ -5,11 +5,12 @@
     <groupId>com.github.houbb</groupId>
     <artifactId>lock</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <modules>
         <module>lock-api</module>
         <module>lock-core</module>
         <module>lock-test</module>
+        <module>lock-redis</module>
     </modules>
 
     <properties>
@@ -33,7 +34,7 @@
 
         <!--============================== INTER ==============================-->
         <plugin.gen.version>1.0.6</plugin.gen.version>
-        <heaven.version>0.1.114</heaven.version>
+        <heaven.version>0.1.148</heaven.version>
         <id.version>0.0.6</id.version>
         <wait.version>0.0.1</wait.version>
         <log-integration.version>1.1.8</log-integration.version>
@@ -54,6 +55,11 @@
             <dependency>
                 <groupId>com.github.houbb</groupId>
                 <artifactId>lock-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>lock-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
