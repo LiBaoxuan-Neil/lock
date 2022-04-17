@@ -16,7 +16,7 @@
 
 # 变更日志
 
-> [变更日志](doc/CHANGELOG.md)
+> [变更日志](CHANGELOG.md)
 
 # 快速开始 
 
@@ -32,7 +32,7 @@ maven 3.x+
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-core</artifactId>
-    <version>${最新版本}</version>
+    <version>0.0.4</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ Jedis jedis = new Jedis("127.0.0.1", 6379);
 IOperator operator = new JedisOperator(jedis);
 
 // 获取锁
-ILock lock = LockRedisBs.newInstance().operator(operator).lock();
+ILock lock = LockBs.newInstance(operator).lock();
 
 try {
     boolean lockResult = lock.tryLock();

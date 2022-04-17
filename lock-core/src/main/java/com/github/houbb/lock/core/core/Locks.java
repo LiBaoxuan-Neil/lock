@@ -1,4 +1,4 @@
-package com.github.houbb.lock.redis.core;
+package com.github.houbb.lock.core.core;
 
 import com.github.houbb.lock.api.core.ILock;
 import com.github.houbb.lock.api.core.IReadWriteLock;

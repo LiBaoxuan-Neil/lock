@@ -1,7 +1,7 @@
 package com.github.houbb.lock.test.core;
 
 import com.github.houbb.lock.api.core.ILock;
-import com.github.houbb.lock.redis.core.LockSpin;
+import com.github.houbb.lock.core.core.LockSpin;
 
 /**
  * @author binbin.hou

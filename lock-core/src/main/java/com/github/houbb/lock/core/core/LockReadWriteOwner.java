@@ -1,23 +1,37 @@
-package com.github.houbb.lock.redis.core;
+package com.github.houbb.lock.core.core;
 
 import com.github.houbb.lock.api.core.IReadWriteLock;
 import com.github.houbb.log.integration.core.Log;
 import com.github.houbb.log.integration.core.LogFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
- * 读写锁实现
+ * 读写锁实现-保证释放锁时为锁的持有者
  *
  * @author binbin.hou
  * @since 0.0.2
  */
-public class LockReadWrite implements IReadWriteLock {
+public class LockReadWriteOwner implements IReadWriteLock {
 
-    private static final Log log = LogFactory.getLog(LockReadWrite.class);
+    private static final Log log = LogFactory.getLog(LockReadWriteOwner.class);
 
     /**
-     * 读次数统计
+     * 如果使用类似 write 的方式，会导致读锁只能有一个。
+     * 调整为使用 HashMap 存放读的信息
+     *
+     * @since 0.0.2
      */
-    private volatile int readCount = 0;
+    private final Map<Thread, Integer> readCountMap = new HashMap<>();
+
+    /**
+     * volatile 引用，保证线程间的可见性+易变性
+     *
+     * @since 0.0.2
+     */
+    private final AtomicReference<Thread> writeOwner = new AtomicReference<>();
 
     /**
      * 写次数统计
@@ -34,18 +48,18 @@ public class LockReadWrite implements IReadWriteLock {
         try {
             // 写锁存在,需要wait
             while (!tryLockRead()) {
+                log.debug("获取读锁失败，进入等待状态。");
                 wait();
             }
-
-            readCount++;
         } catch (InterruptedException e) {
             Thread.interrupted();
-            // 忽略打断
         }
     }
 
     /**
      * 尝试获取读锁
+     *
+     * 读锁之间是不互斥的，这里后续需要优化。
      *
      * @return 是否成功
      * @since 0.0.2
@@ -56,6 +70,9 @@ public class LockReadWrite implements IReadWriteLock {
             return false;
         }
 
+        Thread currentThread = Thread.currentThread();
+        // 次数暂时固定为1，后面如果实现可重入，这里可以改进。
+        this.readCountMap.put(currentThread, 1);
         return true;
     }
 
@@ -66,8 +83,16 @@ public class LockReadWrite implements IReadWriteLock {
      */
     @Override
     public synchronized void unlockRead() {
-        readCount--;
-        notifyAll();
+        Thread currentThread = Thread.currentThread();
+        Integer readCount = readCountMap.get(currentThread);
+
+        if (readCount == null) {
+            throw new RuntimeException("当前线程未持有任何读锁，释放锁失败！");
+        } else {
+            log.debug("释放读锁，唤醒所有等待线程。");
+            readCountMap.remove(currentThread);
+            notifyAll();
+        }
     }
 
     /**
@@ -103,12 +128,15 @@ public class LockReadWrite implements IReadWriteLock {
         }
 
         // 读锁
-        if (readCount > 0) {
+        if (!readCountMap.isEmpty()) {
             log.debug("当前有其他读锁，获取写锁失败。");
             return false;
         }
 
-        return true;
+        Thread currentThread = Thread.currentThread();
+        boolean result = writeOwner.compareAndSet(null, currentThread);
+        log.debug("尝试获取写锁结果：{}", result);
+        return result;
     }
 
     /**
@@ -118,8 +146,15 @@ public class LockReadWrite implements IReadWriteLock {
      */
     @Override
     public synchronized void unlockWrite() {
-        writeCount--;
-        notifyAll();
+        boolean toNullResult = writeOwner.compareAndSet(Thread.currentThread(), null);
+
+        if (toNullResult) {
+            writeCount--;
+            log.debug("写锁释放，唤醒所有等待线程。");
+            notifyAll();
+        } else {
+            throw new RuntimeException("释放写锁失败");
+        }
     }
 
 }

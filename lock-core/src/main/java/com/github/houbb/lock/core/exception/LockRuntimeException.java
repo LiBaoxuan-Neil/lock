@@ -1,4 +1,4 @@
-package com.github.houbb.lock.redis.exception;
+package com.github.houbb.lock.core.exception;
 
 /**
  * @author binbin.hou

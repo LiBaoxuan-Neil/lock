@@ -1,13 +1,9 @@
 package com.github.houbb.lock.test.core;
 
-import com.github.houbb.heaven.util.util.DateUtil;
 import com.github.houbb.lock.api.core.ILock;
-import com.github.houbb.lock.redis.core.LockWaitNotify;
-import com.github.houbb.lock.redis.core.LockWaitNotifyRe;
+import com.github.houbb.lock.core.core.LockWaitNotifyRe;
 import com.github.houbb.log.integration.core.Log;
 import com.github.houbb.log.integration.core.LogFactory;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author binbin.hou

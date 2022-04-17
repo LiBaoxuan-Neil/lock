@@ -1,5 +1,7 @@
 package com.github.houbb.lock.redis.exception;
 
+import com.github.houbb.lock.core.exception.LockRuntimeException;
+
 /**
  * @author binbin.hou
  * @since 0.0.3

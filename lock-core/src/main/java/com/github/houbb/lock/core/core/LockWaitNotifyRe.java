@@ -1,10 +1,9 @@
-package com.github.houbb.lock.redis.core;
+package com.github.houbb.lock.core.core;
 
-import com.github.houbb.lock.redis.exception.LockRuntimeException;
+import com.github.houbb.lock.core.exception.LockRuntimeException;
 import com.github.houbb.log.integration.core.Log;
 import com.github.houbb.log.integration.core.LogFactory;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 

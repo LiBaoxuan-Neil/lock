@@ -60,4 +60,9 @@ public class JedisOperator implements IOperator {
         return LockRedisConst.RELEASE_SUCCESS.equals(result);
     }
 
+    @Override
+    public void clearExpireLock() {
+
+    }
+
 }

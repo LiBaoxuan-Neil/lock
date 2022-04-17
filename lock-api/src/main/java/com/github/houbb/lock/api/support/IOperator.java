@@ -30,4 +30,12 @@ public interface IOperator {
      */
     boolean unlock(String lockKey, String requestId);
 
+    /**
+     * 清空过期的锁
+     *
+     * 避免单个线程 unlock 失败，定时移除过期的锁。
+     * @since 0.0.4
+     */
+    void clearExpireLock();
+
 }
