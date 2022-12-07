@@ -32,7 +32,7 @@ maven 3.x+
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-core</artifactId>
-    <version>0.0.4</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -41,20 +41,19 @@ maven 3.x+
 基于本地 redis 的测试案例。
 
 ```java
-Jedis jedis = new Jedis("127.0.0.1", 6379);
-IOperator operator = new JedisOperator(jedis);
+ILock lock = LockBs.newInstance()
+        .init();
 
-// 获取锁
-ILock lock = LockBs.newInstance(operator).lock();
-
+String key = "ddd";
 try {
-    boolean lockResult = lock.tryLock();
-    System.out.println(lockResult);
-    // 业务处理
+    // 加锁
+    lock.tryLock(key);
+    System.out.println("业务处理");
 } catch (Exception e) {
-    e.printStackTrace();
+    throw new RuntimeException(e);
 } finally {
-    lock.unlock();
+    // 释放锁
+    lock.unlock(key);
 }
 ```
 
