@@ -11,5 +11,15 @@
 
     <artifactId>lock-api</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>common-cache-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>id-api</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

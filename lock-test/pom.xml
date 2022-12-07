@@ -16,10 +16,6 @@
             <groupId>com.github.houbb</groupId>
             <artifactId>lock-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>lock-redis</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

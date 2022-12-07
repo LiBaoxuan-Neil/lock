@@ -36,7 +36,15 @@
             <groupId>com.github.houbb</groupId>
             <artifactId>log-integration</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>common-cache-core</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>redis-config-core</artifactId>
+        </dependency>
 
     </dependencies>
 

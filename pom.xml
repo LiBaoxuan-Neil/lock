@@ -10,7 +10,6 @@
         <module>lock-api</module>
         <module>lock-core</module>
         <module>lock-test</module>
-        <module>lock-redis</module>
     </modules>
 
     <properties>
@@ -34,10 +33,13 @@
 
         <!--============================== INTER ==============================-->
         <plugin.gen.version>1.0.6</plugin.gen.version>
-        <heaven.version>0.1.161</heaven.version>
+
+        <heaven.version>0.1.167</heaven.version>
         <id.version>0.0.6</id.version>
         <wait.version>0.0.1</wait.version>
         <log-integration.version>1.1.8</log-integration.version>
+        <common-cache.version>0.0.5</common-cache.version>
+        <redis-config.version>1.4.0</redis-config.version>
 
         <!--============================== OTHER ==============================-->
         <junit.version>4.12</junit.version>
@@ -57,17 +59,16 @@
                 <artifactId>lock-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.github.houbb</groupId>
-                <artifactId>lock-redis</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
             <!--============================== INTER ==============================-->
             <dependency>
                 <groupId>com.github.houbb</groupId>
                 <artifactId>heaven</artifactId>
                 <version>${heaven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>id-api</artifactId>
+                <version>${id.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.houbb</groupId>
@@ -83,6 +84,23 @@
                 <groupId>com.github.houbb</groupId>
                 <artifactId>log-integration</artifactId>
                 <version>${log-integration.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>common-cache-api</artifactId>
+                <version>${common-cache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>common-cache-core</artifactId>
+                <version>${common-cache.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>redis-config-core</artifactId>
+                <version>${redis-config.version}</version>
             </dependency>
 
             <!--============================== OTHER ==============================-->
