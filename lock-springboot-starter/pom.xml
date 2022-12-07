@@ -9,17 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lock-api</artifactId>
+    <artifactId>lock-springboot-starter</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.github.houbb</groupId>
-            <artifactId>common-cache-api</artifactId>
+            <artifactId>lock-spring</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>id-api</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
-
 </project>

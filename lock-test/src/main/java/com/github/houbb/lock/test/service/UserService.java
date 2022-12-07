@@ -11,12 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
+    public String rawUserName(Long userId) {
+        return userId+"-name";
+    }
+
     @Lock
     public String queryUserName(Long userId) {
         return userId+"-name";
     }
 
-    @Lock(value = "#arg0.name")
+    @Lock(value = "#user.name")
     public void queryUserName2(User user) {
         System.out.println("user: " + user.toString());
     }

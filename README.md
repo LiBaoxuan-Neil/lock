@@ -10,9 +10,13 @@
 
 - 基于 redis 的分布式锁
 
-- 基于 oracle 的分布式锁
+- 整合 spring
 
-- 基于 mysql 的分布式锁
+- 整合 spring-boot
+
+- 开箱即用，支持注解。
+
+- 支持多种 redis 的声明方式
 
 # 变更日志
 
@@ -32,7 +36,7 @@ maven 3.x+
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -57,21 +61,108 @@ try {
 }
 ```
 
+# 整合 spring
+
+## maven 引入
+
+```xml
+<dependency>
+    <groupId>com.github.houbb</groupId>
+    <artifactId>lock-spring</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+## 指定 bean 使用
+
+### 启用分布式锁
+
+`@EnableLock` 启用分布式锁。
+
+```xml
+@Configurable
+@ComponentScan(basePackages = "com.github.houbb.lock.test.service")
+@EnableLock
+public class SpringConfig {
+}
+```
+
+### 使用 LockBs
+
+我们可以直接 `LockBs` 的引导类。
+
+```java
+@ContextConfiguration(classes = SpringConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+public class SpringServiceRawTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private LockBs lockBs;
+
+    @Test
+    public void queryLogTest() {
+        final String key = "name";
+        try {
+            lockBs.tryLock(key);
+            final String value = userService.rawUserName(1L);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        } finally {
+            lockBs.unlock(key);
+        }
+    }
+
+}
+```
+
+## aop 注解使用
+
+### 指定方法注解
+
+当然，我们可以在方法上直接指定注解 `@Lock`，使用更加方便。
+
+支持 SPEL 表达式。
+
+```java
+@Service
+public class UserService {
+
+    @Lock
+    public String queryUserName(Long userId) {
+    }
+
+    @Lock(value = "#user.name")
+    public void queryUserName2(User user) {
+    }
+}
+```
+
+直接使用，AOP 切面生效即可。
+
+# springboot 整合
+
+## maven 引入
+
+```xml
+<dependency>
+    <groupId>com.github.houbb</groupId>
+    <artifactId>lock-springboot-starter</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+## 使用
+
+同 spring
+
 # 后期 Road-MAP
 
 - [ ] 支持锁的可重入
 
 持有锁的线程可以多次获取锁
 
-- [ ] redis 实现的支持
-
-cluster 支持
-
-redis 支持
-
-aliyun-redis 支持
-
-各种各样的声明方式的默认支持
-
-- [ ] 分布式锁注解支持
+- [x] 分布式锁注解支持
 

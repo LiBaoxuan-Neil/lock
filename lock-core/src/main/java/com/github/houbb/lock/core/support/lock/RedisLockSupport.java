@@ -57,31 +57,29 @@ public class RedisLockSupport implements ILockSupport {
 
     @Override
     public boolean tryLock(String key, ILockSupportContext context) {
-        log.info("开始尝试获取锁 {}", key);
-
         // 生成当前线程的唯一标识
         Id id = context.id();
         final String requestId = id.id();
         IdThreadLocalHelper.put(requestId);
-        log.info("开始尝试获取锁 requestId: {}", requestId);
+        log.info("[LOCK] BEGIN TRY LOCK key: {} requestId: {}", key, requestId);
 
         final ICommonCacheService commonCacheService = context.cache();
-
         final int lockExpireMills = context.lockExpireMills();
 
         String result = commonCacheService.set(key, requestId, JedisConst.SET_IF_NOT_EXIST, JedisConst.SET_WITH_EXPIRE_TIME, lockExpireMills);
+        log.info("[LOCK] END TRY LOCK key: {}, requestId: {}, result: {}", key, requestId, result);
         return JedisConst.OK.equalsIgnoreCase(result);
     }
 
     @Override
     public boolean unlock(String key, ILockSupportContext context) {
-        log.info("开始尝试释放锁 {}", key);
         String requestId = IdThreadLocalHelper.get();
-        log.info("开始尝试释放锁 requestId: {}", requestId);
+        log.info("[LOCK] BEGIN UN LOCK key: {} requestId: {}", key, requestId);
 
         final ICommonCacheService commonCacheService = context.cache();
         String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         Object result = commonCacheService.eval(script, Collections.singletonList(key), Collections.singletonList(requestId));
+        log.info("[LOCK] END UN LOCK key: {}, requestId: {}, result: {}", key, requestId, result);
         return JedisConst.RELEASE_SUCCESS.equals(result);
     }
 

@@ -34,10 +34,13 @@ public @interface EnableLock {
 
     /**
      * 缓存实现策略 bean 名称
+     *
+     * 默认引入 redis-config 中的配置
+     *
      * @return 实现
      * @since 1.1.0
      */
-    String cache() default "lockCache";
+    String cache() default "springRedisService";
 
 
 }

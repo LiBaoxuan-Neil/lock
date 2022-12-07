@@ -3,7 +3,6 @@ package com.github.houbb.lock.spring.aop;
 import com.github.houbb.aop.spring.util.SpringAopUtil;
 import com.github.houbb.heaven.util.lang.ObjectUtil;
 import com.github.houbb.heaven.util.lang.StringUtil;
-import com.github.houbb.heaven.util.lang.reflect.ReflectMethodUtil;
 import com.github.houbb.heaven.util.util.ArrayUtil;
 import com.github.houbb.lock.api.exception.LockException;
 import com.github.houbb.lock.core.bs.LockBs;
@@ -11,9 +10,11 @@ import com.github.houbb.lock.spring.annotation.Lock;
 import com.github.houbb.log.integration.core.Log;
 import com.github.houbb.log.integration.core.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.expression.EvaluationContext;
@@ -23,8 +24,8 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,15 +64,16 @@ public class LockAspect {
             Lock lock = method.getAnnotation(Lock.class);
 
             // 如果构建 key？
-            Object[] args = point.getArgs();
-            String lockKey = buildLockKey(lock, method, args);
+            String lockKey = buildLockKey(lock, point);
+
+            boolean tryLockFlag = false;
             try {
                 long tryLockMills = lock.tryLockMills();
 
-                boolean tryLockFlag = lockBs.tryLock(tryLockMills, TimeUnit.MILLISECONDS, lockKey);
+                tryLockFlag = lockBs.tryLock(tryLockMills, TimeUnit.MILLISECONDS, lockKey);
                 if(!tryLockFlag) {
-                    log.warn("尝试获取锁失败 {}", lockKey);
-                    throw new LockException("尝试获取锁失败 " + lockKey);
+                    log.warn("[LOCK] TRY LOCK FAILED {}", lockKey);
+                    throw new LockException("[LOCK] TRY LOCK FAILED " + lockKey);
                 }
 
                 // 执行业务
@@ -79,10 +81,10 @@ public class LockAspect {
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             } finally {
-                boolean unLockFlag = lockBs.unlock(lockKey);
-                if(!unLockFlag) {
-                    log.warn("尝试释放锁失败 {}", lockKey);
-                    // 这里释放异常，没有意义。
+                // 只有获取锁的情况下，才尝试释放锁
+                if(tryLockFlag) {
+                    boolean unLockFlag = lockBs.unlock(lockKey);
+                    // 异常处理等
                 }
             }
         } else {
@@ -97,19 +99,19 @@ public class LockAspect {
      *
      * https://www.cnblogs.com/best/p/5748105.html   SpEL
      * @param lock 注解信息
-     * @param args 参数
+     * @param joinPoint 参数
      * @return 结果
      */
     private String buildLockKey(Lock lock,
-                                Method method,
-                                Object[] args) {
+                                ProceedingJoinPoint joinPoint) {
+        final Object[] args = joinPoint.getArgs();
         final String lockValue = lock.value();
 
         //创建SpEL表达式的解析器
         ExpressionParser parser = new SpelExpressionParser();
         //1. 如果没有入参怎么办？
         if(ArrayUtil.isEmpty(args)) {
-            log.warn("对应的数组信息为空，直接返回 key 的值 {}", lockValue);
+            log.warn("[LOCK] method args is empty, return lock.value() {}", lockValue);
             return lockValue;
         }
 
@@ -123,10 +125,14 @@ public class LockAspect {
         //解析表达式需要的上下文，解析时有一个默认的上下文
         // jdk1.7 之前，直接使用 arg0, arg1...
         EvaluationContext ctx = new StandardEvaluationContext();
-        List<String> paramNameList = ReflectMethodUtil.getParamNames(method);
 
-        for(int i = 0; i < paramNameList.size(); i++) {
-            String paramName = paramNameList.get(i);
+        // 利用 spring 的处理方式
+        Signature signature = joinPoint.getSignature();
+        MethodSignature methodSignature = (MethodSignature) signature;
+        String[] paramNameList = methodSignature.getParameterNames();
+
+        for(int i = 0; i < paramNameList.length; i++) {
+            String paramName = paramNameList[i];
             Object paramValue = args[i];
 
             //在上下文中设置变量，变量名为user，内容为user对象

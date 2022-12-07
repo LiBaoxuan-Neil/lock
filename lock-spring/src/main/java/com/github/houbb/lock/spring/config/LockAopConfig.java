@@ -23,7 +23,7 @@ import org.springframework.core.type.AnnotationMetadata;
  */
 @Configuration
 @ComponentScan(basePackages = "com.github.houbb.lock.spring")
-@Import(LockBeanConfig.class)
+@Import({LockBeanConfig.class, CommonCacheConfig.class})
 public class LockAopConfig implements ImportAware, BeanFactoryPostProcessor {
 
     @Bean("lockBs")

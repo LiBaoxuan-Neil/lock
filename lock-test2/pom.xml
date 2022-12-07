@@ -9,43 +9,39 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lock-core</artifactId>
-    <description>The core lock implements.</description>
+    <artifactId>lock-test2</artifactId>
 
     <dependencies>
-        <!--============================== SELF ==============================-->
         <dependency>
             <groupId>com.github.houbb</groupId>
-            <artifactId>lock-api</artifactId>
+            <artifactId>lock-springboot-starter</artifactId>
         </dependency>
 
-        <!--============================== INTER ==============================-->
         <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>id-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>wait</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>heaven</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>log-integration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>common-cache-core</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.github.houbb</groupId>
-            <artifactId>redis-config-core</artifactId>
+            <artifactId>test-spring</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>slf4j-common</artifactId>
+            <version>1.0.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.1.11</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.11</version>
+        </dependency>
     </dependencies>
-
 </project>
