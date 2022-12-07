@@ -44,11 +44,11 @@ public class LockSupportContext implements ILockSupportContext {
     }
 
     @Override
-    public ICommonCacheService commonCacheService() {
+    public ICommonCacheService cache() {
         return commonCacheService;
     }
 
-    public LockSupportContext commonCacheService(ICommonCacheService commonCacheService) {
+    public LockSupportContext cache(ICommonCacheService commonCacheService) {
         this.commonCacheService = commonCacheService;
         return this;
     }

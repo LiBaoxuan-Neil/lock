@@ -44,7 +44,7 @@ public final class LockBs implements ILock{
      * 缓存策略
      * @since 0.0.4
      */
-    private ICommonCacheService commonCacheService = JedisRedisServiceFactory.simple("127.0.0.1", 6379);
+    private ICommonCacheService cache = JedisRedisServiceFactory.pooled("127.0.0.1", 6379);
 
     /**
      * 锁支持策略
@@ -70,10 +70,10 @@ public final class LockBs implements ILock{
         return this;
     }
 
-    public LockBs commonCacheService(ICommonCacheService commonCacheService) {
-        ArgUtil.notNull(commonCacheService, "commonCacheService");
+    public LockBs cache(ICommonCacheService cache) {
+        ArgUtil.notNull(cache, "cache");
 
-        this.commonCacheService = commonCacheService;
+        this.cache = cache;
         return this;
     }
 
@@ -91,7 +91,7 @@ public final class LockBs implements ILock{
     public LockBs init() {
         this.lockSupportContext = LockSupportContext.newInstance()
                 .id(id)
-                .commonCacheService(commonCacheService)
+                .cache(cache)
                 .lockExpireMills(lockExpireMills);
 
         return this;

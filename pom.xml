@@ -10,6 +10,7 @@
         <module>lock-api</module>
         <module>lock-core</module>
         <module>lock-test</module>
+        <module>lock-spring</module>
     </modules>
 
     <properties>
@@ -40,6 +41,8 @@
         <log-integration.version>1.1.8</log-integration.version>
         <common-cache.version>0.0.5</common-cache.version>
         <redis-config.version>1.4.0</redis-config.version>
+        <aop.version>0.0.2</aop.version>
+        <test.version>0.0.1</test.version>
 
         <!--============================== OTHER ==============================-->
         <junit.version>4.12</junit.version>
@@ -59,6 +62,12 @@
                 <artifactId>lock-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>lock-spring</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!--============================== INTER ==============================-->
             <dependency>
                 <groupId>com.github.houbb</groupId>
@@ -117,6 +126,24 @@
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>aop-core</artifactId>
+                <version>${aop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>aop-spring</artifactId>
+                <version>${aop.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>test-spring</artifactId>
+                <version>${test.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

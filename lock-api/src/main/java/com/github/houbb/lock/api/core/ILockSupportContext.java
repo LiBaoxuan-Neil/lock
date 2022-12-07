@@ -20,7 +20,7 @@ public interface ILockSupportContext {
      * @return 缓存策略
      * @since 0.0.4
      */
-    ICommonCacheService commonCacheService();
+    ICommonCacheService cache();
 
     /**
      * 锁的过期时间

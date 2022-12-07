@@ -65,7 +65,7 @@ public class RedisLockSupport implements ILockSupport {
         IdThreadLocalHelper.put(requestId);
         log.info("开始尝试获取锁 requestId: {}", requestId);
 
-        final ICommonCacheService commonCacheService = context.commonCacheService();
+        final ICommonCacheService commonCacheService = context.cache();
 
         final int lockExpireMills = context.lockExpireMills();
 
@@ -79,7 +79,7 @@ public class RedisLockSupport implements ILockSupport {
         String requestId = IdThreadLocalHelper.get();
         log.info("开始尝试释放锁 requestId: {}", requestId);
 
-        final ICommonCacheService commonCacheService = context.commonCacheService();
+        final ICommonCacheService commonCacheService = context.cache();
         String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         Object result = commonCacheService.eval(script, Collections.singletonList(key), Collections.singletonList(requestId));
         return JedisConst.RELEASE_SUCCESS.equals(result);

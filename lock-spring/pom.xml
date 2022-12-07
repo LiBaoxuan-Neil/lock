@@ -9,26 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lock-test</artifactId>
+    <artifactId>lock-spring</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.github.houbb</groupId>
             <artifactId>lock-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>lock-spring</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.github.houbb</groupId>
-            <artifactId>test-spring</artifactId>
+            <artifactId>aop-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>aop-spring</artifactId>
         </dependency>
     </dependencies>
 
