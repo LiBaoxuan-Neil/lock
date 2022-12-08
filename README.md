@@ -6,6 +6,8 @@
 [![Build Status](https://www.travis-ci.org/houbb/lock.svg?branch=master)](https://www.travis-ci.org/houbb/lock?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/houbb/lock/badge.svg?branch=master)](https://coveralls.io/github/houbb/lock?branch=master)
 
+开源地址：[https://github.com/houbb/lock](https://github.com/houbb/lock) 
+
 ## 目的
 
 - 开箱即用，支持注解式和过程式调用 
