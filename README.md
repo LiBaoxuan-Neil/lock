@@ -1,6 +1,6 @@
 # 项目简介
 
-[lock](https://github.com/houbb/lock) 为 java 设计的分布式锁。
+[lock](https://github.com/houbb/lock) 为 java 设计的分布式锁，开箱即用，纵享丝滑。
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.houbb/lock/badge.svg)](http://mvnrepository.com/artifact/com.github.houbb/lock)
 [![Build Status](https://www.travis-ci.org/houbb/lock.svg?branch=master)](https://www.travis-ci.org/houbb/lock?branch=master)
@@ -13,6 +13,8 @@
 - 基于 redis 的分布式锁
 
 - 内置支持多种 redis 的整合方式
+
+- 渐进式设计，可独立于 spring 使用
 
 - 整合 spring
 
@@ -259,3 +261,9 @@ public @interface Lock {
 持有锁的线程可以多次获取锁
 
 - [x] 分布式锁注解支持
+
+# 拓展阅读
+
+[Redis 分布式锁](https://houbb.github.io/2018/09/08/redis-learn-42-distributed-lock-redis)
+
+[java 从零实现 redis 分布式锁](https://houbb.github.io/2018/09/08/redis-learn-43-distributed-lock-redis-java-impl)
