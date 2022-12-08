@@ -1,6 +1,7 @@
 package com.github.houbb.lock.spring.annotation;
 
 import java.lang.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 分布式加锁注解
@@ -20,9 +21,24 @@ public @interface Lock {
     String value() default "";
 
     /**
-     * 尝试获取锁等待时间
-     * @return 结果
+     * 时间单位
+     * @return 单位
+     * @since 1.2.0
      */
-    long tryLockMills() default 10 * 1000;
+    TimeUnit timeUnit() default TimeUnit.SECONDS;
+
+    /**
+     * 等待锁时间
+     * @return 等待锁时间
+     * @since 1.2.0
+     */
+    long waitLockTime() default 10;
+
+    /**
+     * 业务加锁时间
+     * @return 加锁时间
+     * @since 1.2.0
+     */
+    long lockTime() default 60;
 
 }

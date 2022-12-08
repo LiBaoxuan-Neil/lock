@@ -19,13 +19,6 @@ import java.lang.annotation.*;
 public @interface EnableLock {
 
     /**
-     * 加锁过期时间
-     * @return 时间
-     * @since 1.1.0
-     */
-    int lockExpireMills() default 60 * 1000;
-
-    /**
      * 唯一标识生成策略
      * @return 结果
      * @since 1.1.0
@@ -42,5 +35,18 @@ public @interface EnableLock {
      */
     String cache() default "springRedisService";
 
+    /**
+     * 加锁 key 格式化策略
+     * @return 策略
+     * @since 1.2.0
+     */
+    String lockKeyFormat() default "lockKeyFormat";
+
+    /**
+     * 锁释放失败处理类
+     * @return 结果
+     * @since 1.2.0
+     */
+    String lockReleaseFailHandler() default "lockReleaseFailHandler";
 
 }

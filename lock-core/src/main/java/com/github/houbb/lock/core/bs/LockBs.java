@@ -4,10 +4,9 @@ import com.github.houbb.common.cache.api.service.ICommonCacheService;
 import com.github.houbb.heaven.util.common.ArgUtil;
 import com.github.houbb.id.api.Id;
 import com.github.houbb.id.core.core.Ids;
-import com.github.houbb.lock.api.core.ILock;
-import com.github.houbb.lock.api.core.ILockSupport;
-import com.github.houbb.lock.api.core.ILockSupportContext;
-import com.github.houbb.lock.core.constant.LockConst;
+import com.github.houbb.lock.api.core.*;
+import com.github.houbb.lock.core.support.format.LockKeyFormat;
+import com.github.houbb.lock.core.support.handler.LockReleaseFailHandler;
 import com.github.houbb.lock.core.support.lock.LockSupportContext;
 import com.github.houbb.lock.core.support.lock.RedisLockSupport;
 import com.github.houbb.redis.config.core.factory.JedisRedisServiceFactory;
@@ -20,48 +19,49 @@ import java.util.concurrent.TimeUnit;
  * @author binbin.hou
  * @since 0.0.4
  */
-public final class LockBs implements ILock{
+public final class LockBs implements ILock {
 
-    private LockBs(){}
+    private LockBs() {
+    }
 
     public static LockBs newInstance() {
         return new LockBs();
     }
 
     /**
-     * 加锁锁定时间
-     * @since 0.0.4
-     */
-    private int lockExpireMills = LockConst.DEFAULT_EXPIRE_MILLS;
-
-    /**
      * 标识策略
+     *
      * @since 0.0.4
      */
     private Id id = Ids.uuid32();
 
     /**
      * 缓存策略
+     *
      * @since 0.0.4
      */
     private ICommonCacheService cache = JedisRedisServiceFactory.pooled("127.0.0.1", 6379);
 
     /**
      * 锁支持策略
+     *
      * @since 1.0.0
      */
     private ILockSupport lockSupport = new RedisLockSupport();
 
     /**
-     * 锁上下文
-     * @since 1.0.0
+     * 锁 key 格式化
+     *
+     * @since 1.2.0
      */
-    private ILockSupportContext lockSupportContext = null;
+    private ILockKeyFormat lockKeyFormat = new LockKeyFormat();
 
-    public LockBs lockExpireMills(int lockExpireMills) {
-        this.lockExpireMills = lockExpireMills;
-        return this;
-    }
+    /**
+     * 锁释放失败处理类
+     *
+     * @since 1.2.0
+     */
+    private ILockReleaseFailHandler lockReleaseFailHandler = new LockReleaseFailHandler();
 
     public LockBs id(Id id) {
         ArgUtil.notNull(id, "id");
@@ -84,48 +84,67 @@ public final class LockBs implements ILock{
         return this;
     }
 
+    public LockBs lockKeyFormat(ILockKeyFormat lockKeyFormat) {
+        ArgUtil.notNull(lockKeyFormat, "lockKeyFormat");
 
-    /**
-     * 初始化
-     */
-    public LockBs init() {
-        this.lockSupportContext = LockSupportContext.newInstance()
-                .id(id)
-                .cache(cache)
-                .lockExpireMills(lockExpireMills);
-
+        this.lockKeyFormat = lockKeyFormat;
         return this;
     }
 
+    public LockBs lockReleaseFailHandler(ILockReleaseFailHandler lockReleaseFailHandler) {
+        ArgUtil.notNull(lockReleaseFailHandler, "lockReleaseFailHandler");
+
+        this.lockReleaseFailHandler = lockReleaseFailHandler;
+        return this;
+    }
+
+    public ILockReleaseFailHandler lockReleaseFailHandler() {
+        return lockReleaseFailHandler;
+    }
+
     @Override
-    public boolean tryLock(long time, TimeUnit unit, String key) {
-        ArgUtil.notEmpty(key, "key");
-        this.checkInitStatus();
+    public boolean tryLock(String key, TimeUnit timeUnit, long lockTime, long waitLockTime) {
+        ILockSupportContext supportContext = buildLockSupportContext(key, timeUnit, lockTime, waitLockTime);
+        return this.lockSupport.tryLock(supportContext);
+    }
 
+    @Override
+    public boolean tryLock(String key, TimeUnit timeUnit, long lockTime) {
+        return this.tryLock(key, timeUnit, lockTime, 0);
+    }
 
-        return this.lockSupport.tryLock(time, unit, key, lockSupportContext);
+    @Override
+    public boolean tryLock(String key, long lockTime) {
+        return this.tryLock(key, TimeUnit.SECONDS, lockTime);
     }
 
     @Override
     public boolean tryLock(String key) {
-        ArgUtil.notEmpty(key, "key");
-        this.checkInitStatus();
-
-        return this.lockSupport.tryLock(key, lockSupportContext);
+        return this.tryLock(key, 60);
     }
 
     @Override
     public boolean unlock(String key) {
+        ILockSupportContext supportContext = buildLockSupportContext(key, TimeUnit.SECONDS, 0, 0);
+        return this.lockSupport.unlock(supportContext);
+    }
+
+    /**
+     * 构建上下文
+     *
+     * @param key          key
+     * @param timeUnit     时间
+     * @param lockTime     加锁时间
+     * @param waitLockTime 等待加锁时间
+     * @return 结果
+     * @since 1.0.0
+     */
+    private ILockSupportContext buildLockSupportContext(String key, TimeUnit timeUnit, long lockTime, long waitLockTime) {
         ArgUtil.notEmpty(key, "key");
-        this.checkInitStatus();
+        ArgUtil.notNull(timeUnit, "timeUnit");
 
-        return this.lockSupport.unlock(key, lockSupportContext);
+        ILockSupportContext context = LockSupportContext.newInstance().id(id).cache(cache).lockKeyFormat(lockKeyFormat).lockReleaseFailHandler(lockReleaseFailHandler).key(key).timeUnit(timeUnit).lockTime(lockTime).waitLockTime(waitLockTime);
+        return context;
     }
-
-
-    private void checkInitStatus() {
-        ArgUtil.notNull(lockSupportContext, "please init() first!");
-    }
-
 
 }

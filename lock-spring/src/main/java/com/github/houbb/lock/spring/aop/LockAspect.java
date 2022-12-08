@@ -6,6 +6,7 @@ import com.github.houbb.heaven.util.lang.StringUtil;
 import com.github.houbb.heaven.util.util.ArrayUtil;
 import com.github.houbb.lock.api.exception.LockException;
 import com.github.houbb.lock.core.bs.LockBs;
+import com.github.houbb.lock.core.support.handler.LockReleaseFailHandlerContext;
 import com.github.houbb.lock.spring.annotation.Lock;
 import com.github.houbb.log.integration.core.Log;
 import com.github.houbb.log.integration.core.LogFactory;
@@ -24,9 +25,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author binbin.hou
@@ -61,16 +60,14 @@ public class LockAspect {
 
         boolean isLockAnnotation = method.isAnnotationPresent(Lock.class);
         if(isLockAnnotation) {
-            Lock lock = method.getAnnotation(Lock.class);
+            Lock lockAnnotation = method.getAnnotation(Lock.class);
 
             // 如果构建 key？
-            String lockKey = buildLockKey(lock, point);
+            String lockKey = buildLockKey(lockAnnotation, point);
 
             boolean tryLockFlag = false;
             try {
-                long tryLockMills = lock.tryLockMills();
-
-                tryLockFlag = lockBs.tryLock(tryLockMills, TimeUnit.MILLISECONDS, lockKey);
+                tryLockFlag = lockBs.tryLock(lockKey, lockAnnotation.timeUnit(), lockAnnotation.lockTime(), lockAnnotation.waitLockTime());
                 if(!tryLockFlag) {
                     log.warn("[LOCK] TRY LOCK FAILED {}", lockKey);
                     throw new LockException("[LOCK] TRY LOCK FAILED " + lockKey);
@@ -84,12 +81,32 @@ public class LockAspect {
                 // 只有获取锁的情况下，才尝试释放锁
                 if(tryLockFlag) {
                     boolean unLockFlag = lockBs.unlock(lockKey);
-                    // 异常处理等
+
+                    // 释放锁结果
+                    this.lockReleaseFailHandle(unLockFlag, lockKey);
                 }
             }
         } else {
             return point.proceed();
         }
+    }
+
+    /**
+     * 锁释放失败
+     * @param unLockFlag 释放结果
+     * @param lockKey 加锁信息
+     */
+    private void lockReleaseFailHandle(boolean unLockFlag,
+                                       String lockKey) {
+        if(unLockFlag) {
+            return;
+        }
+
+        // 触发通知，便于用户自定义处理。
+        // 比如报警
+        LockReleaseFailHandlerContext handlerContext = LockReleaseFailHandlerContext.newInstance()
+                .key(lockKey);
+        this.lockBs.lockReleaseFailHandler().handle(handlerContext);
     }
 
     /**
