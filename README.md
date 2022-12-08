@@ -12,11 +12,11 @@
 
 - 基于 redis 的分布式锁
 
+- 内置支持多种 redis 的整合方式
+
 - 整合 spring
 
 - 整合 spring-boot
-
-- 支持多种 redis 的整合方式
 
 # 变更日志
 
@@ -36,7 +36,7 @@ maven 3.x+
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-core</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -83,7 +83,7 @@ LockBs.newInstance()
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-spring</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -93,10 +93,13 @@ LockBs.newInstance()
 
 `@EnableLock` 启用分布式锁。
 
+`@EnableRedisConfig` 启用 redis 的默认配置。
+
 ```xml
 @Configurable
 @ComponentScan(basePackages = "com.github.houbb.lock.test.service")
 @EnableLock
+@EnableRedisConfig
 public class SpringConfig {
 }
 ```
@@ -109,7 +112,6 @@ public @interface EnableLock {
     /**
      * 唯一标识生成策略
      * @return 结果
-     * @since 1.1.0
      */
     String id() default "lockId";
 
@@ -119,21 +121,18 @@ public @interface EnableLock {
      * 默认引入 redis-config 中的配置
      *
      * @return 实现
-     * @since 1.1.0
      */
     String cache() default "springRedisService";
 
     /**
      * 加锁 key 格式化策略
      * @return 策略
-     * @since 1.2.0
      */
     String lockKeyFormat() default "lockKeyFormat";
 
     /**
      * 锁释放失败处理类
      * @return 结果
-     * @since 1.2.0
      */
     String lockReleaseFailHandler() default "lockReleaseFailHandler";
 
@@ -142,7 +141,7 @@ public @interface EnableLock {
 
 其中 `springRedisService` 使用的是 [redis-config](https://github.com/houbb/redis-config) 中的实现。
 
-redis 的配置信息如下：
+对应注解 `@EnableRedisConfig`，redis 的配置信息如下：
 
 | 配置 | 说明 | 默认值
 |:---|:---|:----|
@@ -219,21 +218,18 @@ public @interface Lock {
     /**
      * 时间单位
      * @return 单位
-     * @since 1.2.0
      */
     TimeUnit timeUnit() default TimeUnit.SECONDS;
 
     /**
      * 等待锁时间
      * @return 等待锁时间
-     * @since 1.2.0
      */
     long waitLockTime() default 10;
 
     /**
      * 业务加锁时间
      * @return 加锁时间
-     * @since 1.2.0
      */
     long lockTime() default 60;
 
@@ -248,7 +244,7 @@ public @interface Lock {
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-springboot-starter</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 

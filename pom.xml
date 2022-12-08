@@ -5,7 +5,7 @@
     <groupId>com.github.houbb</groupId>
     <artifactId>lock</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <modules>
         <module>lock-api</module>
         <module>lock-core</module>
@@ -121,6 +121,11 @@
             <dependency>
                 <groupId>com.github.houbb</groupId>
                 <artifactId>redis-config-spring</artifactId>
+                <version>${redis-config.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.houbb</groupId>
+                <artifactId>redis-config-springboot-starter</artifactId>
                 <version>${redis-config.version}</version>
             </dependency>
 

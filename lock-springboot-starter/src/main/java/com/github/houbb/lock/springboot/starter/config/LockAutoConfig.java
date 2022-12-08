@@ -1,8 +1,6 @@
 package com.github.houbb.lock.springboot.starter.config;
 
 import com.github.houbb.lock.spring.annotation.EnableLock;
-import com.github.houbb.lock.spring.config.LockAopConfig;
-import com.github.houbb.redis.config.spring.annotation.EnableRedisConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 

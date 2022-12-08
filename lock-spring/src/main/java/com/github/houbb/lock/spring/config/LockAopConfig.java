@@ -1,16 +1,12 @@
 package com.github.houbb.lock.spring.config;
 
 import com.github.houbb.common.cache.api.service.ICommonCacheService;
-import com.github.houbb.heaven.util.lang.StringUtil;
 import com.github.houbb.id.api.Id;
-import com.github.houbb.id.core.core.Ids;
 import com.github.houbb.lock.api.core.ILockKeyFormat;
 import com.github.houbb.lock.api.core.ILockReleaseFailHandler;
 import com.github.houbb.lock.core.bs.LockBs;
 import com.github.houbb.lock.spring.annotation.EnableLock;
-import com.github.houbb.redis.config.core.factory.JedisRedisServiceFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.*;
@@ -25,7 +21,7 @@ import org.springframework.core.type.AnnotationMetadata;
  */
 @Configuration
 @ComponentScan(basePackages = "com.github.houbb.lock.spring")
-@Import({LockBeanConfig.class, CommonCacheConfig.class})
+@Import({LockBeanConfig.class})
 public class LockAopConfig implements ImportAware, BeanFactoryPostProcessor {
 
     @Bean("lockBs")
