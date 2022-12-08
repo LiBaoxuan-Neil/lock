@@ -267,3 +267,17 @@ public @interface Lock {
 [Redis 分布式锁](https://houbb.github.io/2018/09/08/redis-learn-42-distributed-lock-redis)
 
 [java 从零实现 redis 分布式锁](https://houbb.github.io/2018/09/08/redis-learn-43-distributed-lock-redis-java-impl)
+
+# 缓存相关工具
+
+[cache: 手写渐进式 redis](https://github.com/houbb/cache)
+
+[common-cache: 通用缓存标准定义](https://github.com/houbb/common-cache)
+
+[redis-config: 兼容各种常见的 redis 配置模式](https://github.com/houbb/redis-config)
+
+[lock: 开箱即用的分布式锁](https://github.com/houbb/lock)
+
+[resubmit: 防重复提交](https://github.com/houbb/resubmit)
+
+[rate-limit: 限流](https://github.com/houbb/rate-limit/)
