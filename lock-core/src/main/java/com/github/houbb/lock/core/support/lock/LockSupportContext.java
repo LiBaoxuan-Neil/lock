@@ -75,6 +75,12 @@ public class LockSupportContext implements ILockSupportContext {
     private ILockReleaseFailHandler lockReleaseFailHandler;
 
 
+    /**
+     * 是否可以重入获取
+     * @since 1.5.0
+     */
+    private boolean reentrant;
+
     @Override
     public Id id() {
         return id;
@@ -165,4 +171,13 @@ public class LockSupportContext implements ILockSupportContext {
         return this;
     }
 
+    @Override
+    public boolean reentrant() {
+        return reentrant;
+    }
+
+    public LockSupportContext reentrant(boolean reentrant) {
+        this.reentrant = reentrant;
+        return this;
+    }
 }

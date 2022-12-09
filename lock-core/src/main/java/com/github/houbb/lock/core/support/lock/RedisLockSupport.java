@@ -50,11 +50,11 @@ public class RedisLockSupport implements ILockSupport {
                 return true;
             }
 
-            // 等待 1ms
+            // 等待 10ms
             try {
-                TimeUnit.MILLISECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(10);
             } catch (InterruptedException e) {
-                log.debug("[LOCK] try lock wait 1 mills.");
+                log.debug("[LOCK] try lock wait 10 mills.");
             }
         }
         return false;
@@ -66,21 +66,34 @@ public class RedisLockSupport implements ILockSupport {
      * @return 结果
      */
     protected boolean doLock(ILockSupportContext context) {
+        final ICommonCacheService commonCacheService = context.cache();
         final String key = this.getActualKey(context);
+
+        //1.5.0 是否支持可重入
+        boolean reentrant = context.reentrant();
+        String holdRequestId = IdThreadLocalHelper.get();
+        if(reentrant && StringUtil.isNotEmpty(holdRequestId)) {
+            String cacheValue = commonCacheService.get(key);
+            log.debug("[LOCK] TRY LOCK reentrant key {}, holdRequestId: {}, cacheValue: {}", key, holdRequestId, cacheValue);
+
+            if(holdRequestId.equals(cacheValue)) {
+                return true;
+            }
+        }
+
 
         // 生成当前线程的唯一标识
         final Id id = context.id();
         final String requestId = id.id();
         IdThreadLocalHelper.put(requestId);
-        log.info("[LOCK] BEGIN TRY LOCK key: {} requestId: {}", key, requestId);
+        log.debug("[LOCK] BEGIN TRY LOCK key: {} requestId: {}", key, requestId);
 
-        final ICommonCacheService commonCacheService = context.cache();
         final TimeUnit timeUnit = context.timeUnit();
         final long lockTime = context.lockTime();
         final int lockExpireMills = (int) timeUnit.toMillis(lockTime);
 
         String result = commonCacheService.set(key, requestId, JedisConst.SET_IF_NOT_EXIST, JedisConst.SET_WITH_EXPIRE_TIME, lockExpireMills);
-        log.info("[LOCK] END TRY LOCK key: {}, requestId: {}, lockExpireMills: {}, result: {}", key, requestId, lockExpireMills, result);
+        log.debug("[LOCK] END TRY LOCK key: {}, requestId: {}, lockExpireMills: {}, result: {}", key, requestId, lockExpireMills, result);
         return JedisConst.OK.equalsIgnoreCase(result);
     }
 
@@ -113,7 +126,8 @@ public class RedisLockSupport implements ILockSupport {
         final String rawKey = context.key();
         final ILockKeyFormat keyFormat = context.lockKeyFormat();
         LockKeyFormatContext formatContext = LockKeyFormatContext.newInstance()
-                .rawKey(rawKey);
+                .rawKey(rawKey)
+                .lockKeyNamespace(context.lockKeyNamespace());
 
         String key = keyFormat.format(formatContext);
         log.info("[LOCK] format rawKey: {} to key: {}", rawKey, key);

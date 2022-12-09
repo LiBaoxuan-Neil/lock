@@ -75,5 +75,12 @@ public interface ILockSupportContext {
      */
     ILockReleaseFailHandler lockReleaseFailHandler();
 
+    /**
+     * 是否可以重入获取
+     * @return 结果
+     * @since 1.5.0
+     */
+    boolean reentrant();
+
 
 }

@@ -4,8 +4,10 @@ import com.github.houbb.aop.spring.util.SpringAopUtil;
 import com.github.houbb.heaven.util.lang.ObjectUtil;
 import com.github.houbb.heaven.util.lang.StringUtil;
 import com.github.houbb.heaven.util.util.ArrayUtil;
+import com.github.houbb.lock.api.core.ILockContext;
 import com.github.houbb.lock.api.exception.LockException;
 import com.github.houbb.lock.core.bs.LockBs;
+import com.github.houbb.lock.core.bs.LockContext;
 import com.github.houbb.lock.core.support.handler.LockReleaseFailHandlerContext;
 import com.github.houbb.lock.spring.annotation.Lock;
 import com.github.houbb.log.integration.core.Log;
@@ -67,7 +69,13 @@ public class LockAspect {
 
             boolean tryLockFlag = false;
             try {
-                tryLockFlag = lockBs.tryLock(lockKey, lockAnnotation.timeUnit(), lockAnnotation.lockTime(), lockAnnotation.waitLockTime());
+                ILockContext lockContext = LockContext.newInstance()
+                        .key(lockKey)
+                        .timeUnit(lockAnnotation.timeUnit())
+                        .lockTime(lockAnnotation.lockTime())
+                        .waitLockTime(lockAnnotation.waitLockTime())
+                        .reentrant(lockAnnotation.reentrant());
+                tryLockFlag = lockBs.tryLock(lockContext);
                 if(!tryLockFlag) {
                     log.warn("[LOCK] TRY LOCK FAILED {}", lockKey);
                     throw new LockException("[LOCK] TRY LOCK FAILED " + lockKey);

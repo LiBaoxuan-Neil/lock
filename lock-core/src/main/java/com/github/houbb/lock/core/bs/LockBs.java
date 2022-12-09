@@ -117,9 +117,21 @@ public final class LockBs implements ILock {
     }
 
     @Override
-    public boolean tryLock(String key, TimeUnit timeUnit, long lockTime, long waitLockTime) {
-        ILockSupportContext supportContext = buildLockSupportContext(key, timeUnit, lockTime, waitLockTime);
+    public boolean tryLock(ILockContext context) {
+        ILockSupportContext supportContext = buildLockSupportContext(context.key(), context.timeUnit(), context.lockTime(),
+                context.waitLockTime(), context.reentrant());
         return this.lockSupport.tryLock(supportContext);
+    }
+
+    @Override
+    public boolean tryLock(String key, TimeUnit timeUnit, long lockTime, long waitLockTime, boolean reentrant) {
+        ILockSupportContext supportContext = buildLockSupportContext(key, timeUnit, lockTime, waitLockTime, reentrant);
+        return this.lockSupport.tryLock(supportContext);
+    }
+
+    @Override
+    public boolean tryLock(String key, TimeUnit timeUnit, long lockTime, long waitLockTime) {
+        return this.tryLock(key, timeUnit, lockTime, waitLockTime, true);
     }
 
     @Override
@@ -139,7 +151,9 @@ public final class LockBs implements ILock {
 
     @Override
     public boolean unlock(String key) {
-        ILockSupportContext supportContext = buildLockSupportContext(key, TimeUnit.SECONDS, 0, 0);
+        // 后面三个属性，实际上用不到。
+        // 暂时冗余，后续也可以考虑把释放锁的 context 独立开。
+        ILockSupportContext supportContext = buildLockSupportContext(key, TimeUnit.SECONDS, 0, 0, true);
         return this.lockSupport.unlock(supportContext);
     }
 
@@ -150,10 +164,11 @@ public final class LockBs implements ILock {
      * @param timeUnit     时间
      * @param lockTime     加锁时间
      * @param waitLockTime 等待加锁时间
+     * @param reentrant 是否可以重入获取
      * @return 结果
      * @since 1.0.0
      */
-    private ILockSupportContext buildLockSupportContext(String key, TimeUnit timeUnit, long lockTime, long waitLockTime) {
+    private ILockSupportContext buildLockSupportContext(String key, TimeUnit timeUnit, long lockTime, long waitLockTime, boolean reentrant) {
         ArgUtil.notEmpty(key, "key");
         ArgUtil.notNull(timeUnit, "timeUnit");
 
@@ -163,9 +178,11 @@ public final class LockBs implements ILock {
                 .lockKeyFormat(lockKeyFormat)
                 .lockKeyNamespace(lockKeyNamespace)
                 .lockReleaseFailHandler(lockReleaseFailHandler)
-                .key(key).timeUnit(timeUnit)
+                .key(key)
+                .timeUnit(timeUnit)
                 .lockTime(lockTime)
-                .waitLockTime(waitLockTime);
+                .waitLockTime(waitLockTime)
+                .reentrant(reentrant);
         return context;
     }
 

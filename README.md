@@ -12,6 +12,8 @@
 
 - 开箱即用，支持注解式和过程式调用 
 
+- 支持可重入锁获取
+
 - 基于 redis 的分布式锁
 
 - 内置支持多种 redis 的整合方式
@@ -40,7 +42,7 @@ maven 3.x+
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-core</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
@@ -65,7 +67,162 @@ public void helloTest() {
 }
 ```
 
-### 配置化
+## tryLock() 方法说明
+
+尝试获取指定 key 的锁，返回是否成功。
+
+```java
+    /**
+     * 尝试获取锁，避免参数过多
+     * @param context 上下文
+     * @return 结果
+     */
+    boolean tryLock(final ILockContext context);
+
+    /**
+     * 尝试加锁，如果失败，在 waitLockTime 到达之前，会一直尝试。
+     *
+     * @param key key
+     * @param timeUnit 时间单位
+     * @param waitLockTime 等待锁时间
+     * @param lockTime 加锁时间
+     * @param reentrant 是否可以重入获取
+     * @return 返回
+     */
+    boolean tryLock(String key, TimeUnit timeUnit, long lockTime, long waitLockTime, boolean reentrant);
+
+    /**
+     * 尝试加锁。reentrant=true，默认可重入
+     *
+     * @param key key
+     * @param timeUnit 时间单位
+     * @param waitLockTime 等待锁时间
+     * @param lockTime 加锁时间
+     * @return 返回
+     */
+    boolean tryLock(String key, TimeUnit timeUnit, long lockTime, long waitLockTime);
+
+    /**
+     * 尝试加锁。waitLockTime=0，只进行一次尝试。
+     * @param key key
+     * @param timeUnit 时间单位
+     * @param lockTime 加锁时间
+     * @return 返回
+     */
+    boolean tryLock(String key, TimeUnit timeUnit, long lockTime);
+
+    /**
+     * 尝试加锁。timeUnit = TimeUnit.SECONDS，时间单位默认为秒。
+     * @param key key
+     * @param lockTime 加锁时间
+     * @return 返回
+     */
+    boolean tryLock(String key, long lockTime);
+
+    /**
+     * 尝试加锁。lockTime=10，默认等待10S
+     * @param key key
+     * @return 返回
+     */
+    boolean tryLock(String key);
+```
+
+提供了较多方法，只是为了使用更加便捷。
+
+`boolean tryLock(final ILockContext context);` 中的入参，和参数一一对应，默认值也相同。
+
+context 的引入，为了避免后续的配置项较多，方法会膨胀的问题。
+
+```java
+ILockContext lockContext = LockContext.newInstance()
+        .key(key)
+        .lockTime(LockConst.DEFAULT_LOCK_TIME)
+        .waitLockTime(LockConst.DEFAULT_WAIT_LOCK_TIME)
+        .reentrant(LockConst.DEFAULT_REENTRANT)
+        .timeUnit(LockConst.DEFAULT_TIME_UNIT);
+
+boolean lockFlag = lock.tryLock(lockContext);
+```
+
+## unlock() 方法说明
+
+释放指定 key 的锁，返回是否成功。
+
+```java
+/**
+ * 解锁
+ *
+ * ps: 目前释放锁不会进行重试。所有的 key 有过期时间。
+ * @param key key
+ * @return 是否释放锁成功
+ */
+boolean unlock(String key);
+```
+
+建议在 finally 中调用，保障锁的正常释放。
+
+## 锁的可重入性
+
+> 概念：可重入性（reentrancy）是指一个线程在拥有一个资源（通常是一个锁）的情况下，再次获取该资源时不会造成死锁。可重入性在多线程编程中非常重要，因为它可以避免因线程之间的相互依赖而导致的死锁。
+
+### 可重入的例子
+
+我们支持一个线程可以多次获取一个锁，默认是可重入的。
+
+```java
+@Test
+public void reTest() {
+    ILock lock = LockBs.newInstance();
+    String key = "ddd";
+    try {
+        // 加锁
+        boolean lockFlag = lock.tryLock(key);
+        //1. 首次获取锁成功
+        Assert.assertTrue(lockFlag);
+        //2. 重新获取锁成功
+        boolean reLockFlag = lock.tryLock(key);
+        Assert.assertTrue(reLockFlag);
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    } finally {
+        // 释放锁
+        lock.unlock(key);
+    }
+}
+```
+
+### 不可重入的例子
+
+当然，我们也支持不可重入的形式，指定对应的配置即可。
+
+```java
+public void noReTest() {
+    ILock lock = LockBs.newInstance();
+    String key = "ddd";
+    try {
+        ILockContext lockContext = LockContext.newInstance()
+                .key(key)
+                .waitLockTime(5)
+                .reentrant(false);  // 指定不可重入
+
+        boolean lockFlag = lock.tryLock(lockContext);
+        //1. 首次获取锁成功
+        Assert.assertTrue(lockFlag);
+        //2. 不是重入，第二次获取失败
+        boolean reLockFlag = lock.tryLock(lockContext);
+        Assert.assertFalse(reLockFlag);
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    } finally {
+        // 释放锁
+        lock.unlock(key);
+    }
+}
+```
+
+不可重入锁，第二次获取就会失败。
+
+## 配置化
 
 为了便于拓展，LockBs 的配置支持自定义：
 
@@ -88,7 +245,7 @@ LockBs.newInstance()
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-spring</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
@@ -137,7 +294,6 @@ public @interface EnableLock {
 
     /**
      * 锁 key 的默认命名空间
-     * @since 1.4.0
      * @return 命名空间
      */
     String lockKeyNamespace() default LockConst.DEFAULT_LOCK_KEY_NAMESPACE;
@@ -160,6 +316,8 @@ public @interface EnableLock {
 | redis.address | redis 地址 | 127.0.0.1 |
 | redis.port | redis 端口 | 6379 |
 | redis.password | redis 密码 | |
+
+当然，你可以使用自己想用的其他缓存实现，只需要实现对应的接口标准即可。
 
 ### 使用 LockBs
 
@@ -237,13 +395,19 @@ public @interface Lock {
      * 等待锁时间
      * @return 等待锁时间
      */
-    long waitLockTime() default 10;
+    long waitLockTime() default LockConst.DEFAULT_WAIT_LOCK_TIME;
 
     /**
      * 业务加锁时间
      * @return 加锁时间
      */
-    long lockTime() default 60;
+    long lockTime() default LockConst.DEFAULT_LOCK_TIME;
+
+    /**
+     * 是否可以重入获取
+     * @return 结果
+     */
+    boolean reentrant() default LockConst.DEFAULT_REENTRANT;
 
 }
 ```
@@ -256,17 +420,19 @@ public @interface Lock {
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-springboot-starter</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
 ## 使用
 
-同 spring
+所有的配置会自动生效。
+
+使用方式同 spring。
 
 # 后期 Road-MAP
 
-- [ ] 支持锁的可重入
+- [x] 支持锁的可重入
 
 持有锁的线程可以多次获取锁
 

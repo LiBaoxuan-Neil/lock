@@ -1,5 +1,7 @@
 package com.github.houbb.lock.core.constant;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 通用锁常量
  *
@@ -12,23 +14,33 @@ public final class LockConst {
     }
 
     /**
-     * 默认的失效时间
-     *
-     * 暂时定为 1min
-     * @since 0.0.1
-     */
-    public static final int DEFAULT_EXPIRE_MILLS = 1000 * 60;
-
-    /**
-     * 默认锁为全局锁
-     * @since 0.0.1
-     */
-    public static final String DEFAULT_KEY = "GLOBAL";
-
-    /**
      * 加锁 key 对应的命名空间
      * @since 1.4.0
      */
     public static final String DEFAULT_LOCK_KEY_NAMESPACE = "DISTRIBUTED_LOCK";
+
+    /**
+     * 默认时间单位
+     * @since 1.5.0
+     */
+    public static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
+
+    /**
+     * 默认加锁时间
+     * @since 1.5.0
+     */
+    public static final int DEFAULT_LOCK_TIME = 60;
+
+    /**
+     * 默认等待加锁时间
+     * @since 1.5.0
+     */
+    public static final int DEFAULT_WAIT_LOCK_TIME = 60;
+
+    /**
+     * 默认可重入标识
+     * @since 1.5.0
+     */
+    public static final boolean DEFAULT_REENTRANT = true;
 
 }

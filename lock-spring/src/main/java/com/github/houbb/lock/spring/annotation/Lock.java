@@ -1,5 +1,7 @@
 package com.github.houbb.lock.spring.annotation;
 
+import com.github.houbb.lock.core.constant.LockConst;
+
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
@@ -32,13 +34,20 @@ public @interface Lock {
      * @return 等待锁时间
      * @since 1.2.0
      */
-    long waitLockTime() default 10;
+    long waitLockTime() default LockConst.DEFAULT_WAIT_LOCK_TIME;
 
     /**
      * 业务加锁时间
      * @return 加锁时间
      * @since 1.2.0
      */
-    long lockTime() default 60;
+    long lockTime() default LockConst.DEFAULT_LOCK_TIME;
+
+    /**
+     * 是否可以重入获取
+     * @return 结果
+     * @since 1.5.0
+     */
+    boolean reentrant() default LockConst.DEFAULT_REENTRANT;
 
 }

@@ -1,7 +1,5 @@
 package com.github.houbb.lock.api.core;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * 分布式锁接口定义
  * @author binbin.hou
