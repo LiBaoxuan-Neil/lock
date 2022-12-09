@@ -54,7 +54,7 @@ public void helloTest() {
     String key = "ddd";
     try {
         // 加锁
-        lock.tryLock(key);
+        boolean lockFlag = lock.tryLock(key);
         System.out.println("业务处理");
     } catch (Exception e) {
         throw new RuntimeException(e);
@@ -172,7 +172,7 @@ public class SpringServiceRawTest {
     public void queryLogTest() {
         final String key = "name";
         try {
-            lockBs.tryLock(key);
+            boolean lockFlag = lockBs.tryLock(key);
             final String value = userService.rawUserName(1L);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
