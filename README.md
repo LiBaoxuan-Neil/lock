@@ -1,6 +1,6 @@
 # 项目简介
 
-[lock](https://github.com/houbb/lock) 为 java 设计的分布式锁，开箱即用，纵享丝滑。
+[lock](https://github.com/houbb/lock) 为 java 设计的渐进式分布式锁，开箱即用，纵享丝滑。
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.houbb/lock/badge.svg)](http://mvnrepository.com/artifact/com.github.houbb/lock)
 [![Build Status](https://www.travis-ci.org/houbb/lock.svg?branch=master)](https://www.travis-ci.org/houbb/lock?branch=master)
