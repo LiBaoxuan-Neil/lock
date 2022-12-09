@@ -374,6 +374,8 @@ public class UserService {
 
 `@Lock` 属性说明，value 用于指定 key，支持 SPEL 表达式。
 
+**如果 aop 中拦截获取锁失败，默认会抛出异常。**
+
 其他属性，和引导类的方法参数一一对应。
 
 ```java
