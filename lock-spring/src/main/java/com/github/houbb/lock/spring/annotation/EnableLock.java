@@ -1,5 +1,6 @@
 package com.github.houbb.lock.spring.annotation;
 
+import com.github.houbb.lock.core.constant.LockConst;
 import com.github.houbb.lock.spring.config.LockAopConfig;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
@@ -41,6 +42,13 @@ public @interface EnableLock {
      * @since 1.2.0
      */
     String lockKeyFormat() default "lockKeyFormat";
+
+    /**
+     * 锁 key 的默认命名空间
+     * @since 1.4.0
+     * @return 命名空间
+     */
+    String lockKeyNamespace() default LockConst.DEFAULT_LOCK_KEY_NAMESPACE;
 
     /**
      * 锁释放失败处理类

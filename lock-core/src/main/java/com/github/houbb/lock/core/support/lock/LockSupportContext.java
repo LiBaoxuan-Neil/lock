@@ -63,6 +63,12 @@ public class LockSupportContext implements ILockSupportContext {
     private ILockKeyFormat lockKeyFormat;
 
     /**
+     * 锁 key 的默认命名空间
+     * @since 1.4.0
+     */
+    private String lockKeyNamespace;
+
+    /**
      * 锁释放失败处理类
      * @since 1.2.0
      */
@@ -136,6 +142,16 @@ public class LockSupportContext implements ILockSupportContext {
 
     public LockSupportContext lockKeyFormat(ILockKeyFormat lockKeyFormat) {
         this.lockKeyFormat = lockKeyFormat;
+        return this;
+    }
+
+    @Override
+    public String lockKeyNamespace() {
+        return lockKeyNamespace;
+    }
+
+    public LockSupportContext lockKeyNamespace(String lockKeyNamespace) {
+        this.lockKeyNamespace = lockKeyNamespace;
         return this;
     }
 

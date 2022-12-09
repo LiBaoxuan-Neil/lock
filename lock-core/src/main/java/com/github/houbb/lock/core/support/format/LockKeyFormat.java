@@ -13,9 +13,11 @@ public class LockKeyFormat implements ILockKeyFormat {
     @Override
     public String format(ILockKeyFormatContext formatContext) {
         String rawKey = formatContext.rawKey();
+        String namespace = formatContext.lockKeyNamespace();
 
-        String format = "DISTRIBUTED-LOCK:%s";
-        return String.format(format, rawKey);
+        String format = "%s:%s";
+
+        return String.format(format, namespace, rawKey);
     }
 
 }

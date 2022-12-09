@@ -25,4 +25,10 @@ public final class LockConst {
      */
     public static final String DEFAULT_KEY = "GLOBAL";
 
+    /**
+     * 加锁 key 对应的命名空间
+     * @since 1.4.0
+     */
+    public static final String DEFAULT_LOCK_KEY_NAMESPACE = "DISTRIBUTED_LOCK";
+
 }

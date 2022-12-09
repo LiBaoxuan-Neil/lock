@@ -40,7 +40,7 @@ maven 3.x+
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-core</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
@@ -75,6 +75,7 @@ LockBs.newInstance()
         .cache(JedisRedisServiceFactory.pooled("127.0.0.1", 6379)) //缓存策略
         .lockSupport(new RedisLockSupport())    // 锁实现策略
         .lockKeyFormat(new LockKeyFormat())     // 针对 key 的格式化处理策略
+        .lockKeyNamespace(LockConst.DEFAULT_LOCK_KEY_NAMESPACE) // 加锁 key 的命名空间，避免不同应用冲突
         .lockReleaseFailHandler(new LockReleaseFailHandler())   //释放锁失败处理
         ;
 ```
@@ -87,7 +88,7 @@ LockBs.newInstance()
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-spring</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
@@ -133,6 +134,13 @@ public @interface EnableLock {
      * @return 策略
      */
     String lockKeyFormat() default "lockKeyFormat";
+
+    /**
+     * 锁 key 的默认命名空间
+     * @since 1.4.0
+     * @return 命名空间
+     */
+    String lockKeyNamespace() default LockConst.DEFAULT_LOCK_KEY_NAMESPACE;
 
     /**
      * 锁释放失败处理类
@@ -248,7 +256,7 @@ public @interface Lock {
 <dependency>
     <groupId>com.github.houbb</groupId>
     <artifactId>lock-springboot-starter</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 

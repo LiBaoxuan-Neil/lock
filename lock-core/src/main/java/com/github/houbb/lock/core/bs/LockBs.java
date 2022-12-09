@@ -5,6 +5,7 @@ import com.github.houbb.heaven.util.common.ArgUtil;
 import com.github.houbb.id.api.Id;
 import com.github.houbb.id.core.core.Ids;
 import com.github.houbb.lock.api.core.*;
+import com.github.houbb.lock.core.constant.LockConst;
 import com.github.houbb.lock.core.support.format.LockKeyFormat;
 import com.github.houbb.lock.core.support.handler.LockReleaseFailHandler;
 import com.github.houbb.lock.core.support.lock.LockSupportContext;
@@ -57,6 +58,12 @@ public final class LockBs implements ILock {
     private ILockKeyFormat lockKeyFormat = new LockKeyFormat();
 
     /**
+     * 锁 key 的默认命名空间
+     * @since 1.4.0
+     */
+    private String lockKeyNamespace = LockConst.DEFAULT_LOCK_KEY_NAMESPACE;
+
+    /**
      * 锁释放失败处理类
      *
      * @since 1.2.0
@@ -88,6 +95,13 @@ public final class LockBs implements ILock {
         ArgUtil.notNull(lockKeyFormat, "lockKeyFormat");
 
         this.lockKeyFormat = lockKeyFormat;
+        return this;
+    }
+
+    public LockBs lockKeyNamespace(String lockKeyNamespace) {
+        ArgUtil.notEmpty(lockKeyNamespace, "lockKeyNamespace");
+
+        this.lockKeyNamespace = lockKeyNamespace;
         return this;
     }
 
@@ -143,7 +157,15 @@ public final class LockBs implements ILock {
         ArgUtil.notEmpty(key, "key");
         ArgUtil.notNull(timeUnit, "timeUnit");
 
-        ILockSupportContext context = LockSupportContext.newInstance().id(id).cache(cache).lockKeyFormat(lockKeyFormat).lockReleaseFailHandler(lockReleaseFailHandler).key(key).timeUnit(timeUnit).lockTime(lockTime).waitLockTime(waitLockTime);
+        ILockSupportContext context = LockSupportContext.newInstance()
+                .id(id)
+                .cache(cache)
+                .lockKeyFormat(lockKeyFormat)
+                .lockKeyNamespace(lockKeyNamespace)
+                .lockReleaseFailHandler(lockReleaseFailHandler)
+                .key(key).timeUnit(timeUnit)
+                .lockTime(lockTime)
+                .waitLockTime(waitLockTime);
         return context;
     }
 
